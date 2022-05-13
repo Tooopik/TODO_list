@@ -1,4 +1,5 @@
 from datetime import datetime
+import pickle
 
 
 class Task:
@@ -25,9 +26,24 @@ class Task:
 
     @ staticmethod
     def showAllTask():
-        for task in Task.taskList:
-            print(f'Task name: {task.task} | Status: {task.status}')
+        for id, task in enumerate(Task.taskList):
+            print(
+                f'Task ID: {id + 1} | Task: {task.task} | Status: {task.status}')
         print('\n')
+
+    @staticmethod
+    def saveTasklist():
+        with open("test.pkl", "wb") as out:
+            pickle.dump(Task.taskList, out)
+
+    @staticmethod
+    def loadTasklist():
+        try:
+            with open("test.pkl", "rb") as inp:
+                Task.taskList = pickle.load(inp)
+
+        except:
+            print("ERROR")
 
 
 def menu():
@@ -46,6 +62,7 @@ def menu():
 
 
 print('Welcome to your TODO list')
+Task.loadTasklist()
 while True:
     userChoice = menu()
     if userChoice == 1:
@@ -60,6 +77,7 @@ while True:
         deadLine = datetime(2020, 7, 1)
         date = datetime.now()
         Task(task, date, deadLine)
+        print('New task added')
 
     elif userChoice == 3:
         print('Possition deleted')
@@ -67,4 +85,5 @@ while True:
     elif userChoice == 4:
         break
 
+Task.saveTasklist()
 print('\n'+'Bye bye')
