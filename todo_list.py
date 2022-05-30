@@ -1,4 +1,3 @@
-from asyncio.windows_events import NULL
 from datetime import datetime
 import pickle
 
@@ -13,6 +12,16 @@ class Task:
         self.addDate = addDate
         self.status = taskStatus
         self.taskList.append(self)
+
+    @staticmethod
+    def addTask():
+        print('Enter task name:')
+        task = input('>>> ')
+        print('Enter dead line DD-MM-YYYY:')
+        deadLine = datetime.strptime(input('>>> '), '%d-%m-%Y')
+        date = datetime.now()
+        Task(task, date, deadLine)
+        print('New task added'+'\n')
 
     @staticmethod
     def editTask():
@@ -74,10 +83,16 @@ class Task:
 
     @ staticmethod
     def showAllTask():
-        for id, task in enumerate(Task.taskList):
-            print(
-                f'Task ID: {id + 1} | Task: {task.task} | Status: {task.status}')
-        print('\n')
+        tasksAmounth = Task.numberOfTask()
+        print(f'You have {tasksAmounth} tasks:')
+        if tasksAmounth > 0:
+            today = datetime.today()
+            for id, task in enumerate(Task.taskList):
+                deltaTime = task.deadLine - today
+                age = today - task.addDate
+                print(
+                    f'Task ID: {id + 1:^3} | Task: {task.task:30} | Status: {task.status:^6}  | AGE: {age.days:^5} days | DELTA: {deltaTime.days:^5} days')
+            print('\n')
 
     @staticmethod
     def saveTasklist():
@@ -114,18 +129,10 @@ Task.loadTasklist()
 while True:
     userChoice = menu()
     if userChoice == 1:
-        tasksAmounth = Task.numberOfTask()
-        print(f'You have {tasksAmounth} tasks'+'\n')
-        if tasksAmounth > 0:
-            Task.showAllTask()
+        Task.showAllTask()
 
     elif userChoice == 2:
-        print('Enter task name:')
-        task = input('>>> ')
-        deadLine = datetime(2020, 7, 1)
-        date = datetime.now()
-        Task(task, date, deadLine)
-        print('New task added')
+        Task.addTask()
 
     elif userChoice == 3:
         Task.editTask()
